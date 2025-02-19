@@ -1,0 +1,107 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2639
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica-Bold;\f1\fnil\fcharset0 HelveticaNeue-Bold;\f2\fswiss\fcharset0 Helvetica;
+\f3\fnil\fcharset0 HelveticaNeue;\f4\froman\fcharset0 Times-Roman;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b\fs72 \cf0 Solution for 
+\f1 linuxserver/firefox:0.24.04\
+
+\fs26 \
+
+\f2\b0\fs24 \
+
+\f0\b\fs36 Solution#1\
+\
+
+\fs28 General Information:\
+
+\f2\b0 While Running the container with 
+\f3\fs26 PUID=1000 -e PGID=1000 or without PUID=1000 -e PGID=1000 the container always run as root where this script works perfectly.\
+Official Image Name: linuxserver/firefox\
+Version of the image: 0.24.04\
+Last Updated: 15 Feb 2025\
+SERVERS: VNC Server, Nginx \
+OS : UBUNTU\
+DOWNLOADS: 500K+\
+\
+ what it does is first it stops the running vnc server since it is running on nginx then \
+\
+\
+# Step 1: Check if any service is using port 3000\
+# This command lists open files and network connections, filtering by port 3000\
+# If a process is using this port, it will be displayed\
+# Command: lsof -i :3000\
+\
+# Step 2: Check for any running Nginx processes\
+# This command lists all running processes and filters for 'nginx'\
+# If Nginx is running, it will return one or more process entries\
+# Command: ps aux | grep nginx\
+\
+# Step 3: Stop and remove Nginx services to free up port 3000\
+# These commands remove Nginx service files and terminate all Nginx processes\
+\
+# Remove the Nginx service directory from s6 service manager (if exists)\
+# Command: rm -rf /var/run/s6/services/nginx\
+\
+# Remove the Nginx service directory from system run directory (if exists)\
+# Command: rm -rf /run/service/svc-nginx\
+\
+# Kill all running Nginx processes\
+# Command: pkill -f nginx\
+\
+# Step 4: Wait for 2 seconds before starting the Python server\
+# This ensures proper cleanup of any lingering processes\
+# Command: sleep 2\
+\
+# Step 5: Start the Python HTTP server on port 3000\
+# This command launches a simple HTTP server using Python3\
+# Command: python3 -m http.server 3000\
+\
+and the python3 server will allow user the download the malicous file if he hits the regular URL to access the containerized web browser.
+\f0\b\fs28 \
+\
+\pard\pardeftab560\slleading20\partightenfactor0
+
+\f3\b0\fs26 \cf0 docker pull linuxserver/firefox:0.24.04\
+\
+docker run -d --name=firefox -e PUID=1000 -e PGID=1000 -e TZ=Europe/Rome -p 3000:3000 --shm-size="2gb" --restart unless-stopped linuxserver/firefox:0.24.04\
+\
+docker run -d --name=firefox -e TZ=Europe/Rome -p 3000:3000 --shm-size="2gb" --restart unless-stopped linuxserver/firefox:0.24.04\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f2\fs24 \cf0 \
+
+\f0\b Look for Service Usinf port 3000\
+\
+\pard\pardeftab720\partightenfactor0
+
+\f4\b0 \cf0 \expnd0\expndtw0\kerning0
+lsof -i :3000
+\f0\b \kerning1\expnd0\expndtw0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+Look for service \
+\
+\pard\pardeftab720\partightenfactor0
+
+\f4\b0 \cf0 \expnd0\expndtw0\kerning0
+ps aux | grep nginx
+\f2 \kerning1\expnd0\expndtw0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b \cf0 Commands to Stop and Start Python3 service on port 3000\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f2\b0 \cf0 \
+rm -rf /var/run/s6/services/nginx\
+rm -rf /run/service/svc-nginx\
+pkill -f nginx\
+sleep 2\
+python3 -m http.server 3000\
+}
