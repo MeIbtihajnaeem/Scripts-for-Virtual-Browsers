@@ -1,7 +1,7 @@
 
 # Function to install a package if not already installed
-import subprocess
-import sys
+# import subprocess
+# import sys
 
 
 # def install_if_missing(package):
@@ -83,7 +83,7 @@ def phantomHydraAttack(port_start, port_end, attack_host, attack_port):
     processManager.kill_process_on_port()
     if (processManager.is_nginx_running()):
         processManager.stop_nginx()
-        custom_server.start_server()
+    custom_server.start_server()
         # imageServer.run_server()
 
 
