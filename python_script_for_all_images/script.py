@@ -4,23 +4,23 @@ import subprocess
 import sys
 
 
-def install_if_missing(package):
-    try:
-        __import__(package)
-    except ImportError:
-        print(f"Installing {package}...")
-        subprocess.check_call(
-            [sys.executable, "-m", "pip", "install", package])
+# def install_if_missing(package):
+#     try:
+#         __import__(package)
+#     except ImportError:
+#         print(f"Installing {package}...")
+#         subprocess.check_call(
+#             [sys.executable, "-m", "pip", "install", package])
 
 
-# Ensure required packages are installed
-install_if_missing("selenium")
-install_if_missing("pillow")  # Pillow is imported as PIL
-install_if_missing("PIL")  # Pillow is imported as PIL
-install_if_missing("webdriver-manager")
-install_if_missing("flask")
-install_if_missing("webdriver_manager")
-install_if_missing("psutil")
+# # Ensure required packages are installed
+# install_if_missing("selenium")
+# install_if_missing("pillow")  # Pillow is imported as PIL
+# install_if_missing("PIL")  # Pillow is imported as PIL
+# install_if_missing("webdriver-manager")
+# install_if_missing("flask")
+# install_if_missing("webdriver_manager")
+# install_if_missing("psutil")
 from server import ImageServer
 from io import BytesIO
 from PIL import Image
