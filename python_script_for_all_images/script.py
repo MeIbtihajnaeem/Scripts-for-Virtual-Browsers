@@ -8,6 +8,7 @@ import subprocess
 import asyncio
 
 
+
 def _scan_localhost_ports(start_port=1, end_port=65535):
     print("Scanning localhost for open ports...")
     open_ports = []
@@ -112,7 +113,7 @@ def main():
                 port_2 = int(input("Enter Ending Port:"))
             except ValueError:
                 print("Invalid input. Please enter numeric values.")
-            phantomHydraAttack(port_1, port_2, attack_host, attack_port)
+            asyncio.run(phantomHydraAttack(port_1, port_2, attack_host, attack_port))
 
         elif choice == '2':
             chrootBreakOutExploit()
