@@ -3,7 +3,6 @@ import shutil
 import subprocess
 import time
 
-# Global variables to store old and new Nginx paths
 OLD_NGINX_PATHS = []
 NEW_NGINX_PATHS = []
 

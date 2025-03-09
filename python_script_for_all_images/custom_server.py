@@ -2,7 +2,7 @@ import http.server
 import socketserver
 import os
 
-SCRIPT_PATH = "static/generated_script.py"  # Path to the generated script
+SCRIPT_PATH = "static/generated_script.py" 
 
 class CustomHandler(http.server.SimpleHTTPRequestHandler):
     """Handles HTTP GET requests to serve the generated script."""
