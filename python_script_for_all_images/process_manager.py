@@ -2,7 +2,7 @@ import os
 import shutil
 import subprocess
 import asyncio
-
+import platform
 OLD_NGINX_PATHS = []
 NEW_NGINX_PATHS = []
 
@@ -43,8 +43,31 @@ class ProcessManager:
         except Exception as e:
             print(f"Error checking Nginx: {e}")
             return False
+    def detect_os():
+        """Detects the operating system and distribution (Ubuntu, Debian, etc.)."""
+        try:
+            # Get OS name using platform module
+            os_name = platform.system()
+            if os_name != "Linux":
+                return f"Detected OS: {os_name}"
+
+            # Check for Linux distribution details
+            if os.path.exists("/etc/os-release"):
+                with open("/etc/os-release") as f:
+                    lines = f.readlines()
+                    os_info = {line.split("=")[0]: line.split("=")[1].strip().strip('"') for line in lines if "=" in line}
+
+                    distro_name = os_info.get("NAME", "Unknown Linux")
+                    distro_id = os_info.get("ID", "Unknown ID")
+                    return f"Detected OS: {distro_name} ({distro_id})"
+            
+            return "Detected OS: Linux (Unknown Distribution)"
+
+        except Exception as e:
+            return f"Error detecting OS: {e}"
 
     async def stop_nginx(self):
+        self.detect_os()
         """Asynchronously stops Nginx and moves service files to a backup directory instead of deleting them."""
         global OLD_NGINX_PATHS, NEW_NGINX_PATHS
         try:
