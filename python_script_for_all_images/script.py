@@ -1,15 +1,7 @@
-from server import ImageServer
-from io import BytesIO
-from PIL import Image
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.service import Service
-from selenium import webdriver
+
+# Function to install a package if not already installed
 import subprocess
 import sys
-import socket
-import os
-from .process_manager import ProcessManager
-# Function to install a package if not already installed
 
 
 def install_if_missing(package):
@@ -29,7 +21,15 @@ install_if_missing("webdriver-manager")
 install_if_missing("flask")
 install_if_missing("webdriver_manager")
 install_if_missing("psutil")
-
+from server import ImageServer
+from io import BytesIO
+from PIL import Image
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+from selenium import webdriver
+import socket
+import os
+from process_manager import ProcessManager
 
 def _capture_host_screenshot(host="localhost", port=3000):
     # Setup Selenium WebDriver
