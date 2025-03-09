@@ -2,6 +2,8 @@
 import socket
 from process_manager import ProcessManager
 from custom_server import CustomServer 
+import ctypes
+import os
 
 
 
@@ -19,6 +21,31 @@ def _scan_localhost_ports(start_port=1, end_port=65535):
     return open_ports
 
 
+def _has_chroot_capability():
+    """Checks if the current process has permission to use chroot."""
+    
+    # Check if running as root (chroot requires root privileges)
+    if os.geteuid() != 0:
+        print("❌ Chroot requires root privileges. Current user is not root.")
+        return False
+    
+    try:
+        # Use ctypes to call chroot (this will fail if not permitted)
+        libc = ctypes.CDLL("libc.so.6")
+        result = libc.chroot(b"/")
+        
+        if result == 0:
+            print("✅ Chroot capability is available.")
+            return True
+        else:
+            print("❌ Chroot capability is NOT available.")
+            return False
+            
+    except Exception as e:
+        print(f"⚠️ Error checking chroot capability: {e}")
+        return False
+    
+
 def phantomHydraAttack(port_start, port_end, attack_host, attack_port):
     _scan_localhost_ports(port_start, port_end)
     port = int(input("Enter Open Port on which you want to continue: "))
@@ -32,7 +59,8 @@ def phantomHydraAttack(port_start, port_end, attack_host, attack_port):
 
 
 def chrootBreakOutExploit():
-    print("I am in")
+    has_chroot_permission = _has_chroot_capability()
+    print(has_chroot_permission)
 
 
 def main():
