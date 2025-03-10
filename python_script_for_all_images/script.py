@@ -130,7 +130,15 @@ def main():
                 print("Invalid input. Please enter numeric values.")
             asyncio.run(phantomHydraAttackForNginx(port_1, port_2, attack_host, attack_port))
         elif choice =='2':
-            asyncio.run(phantomHydraAttackForNode())
+            try:
+                attack_host = input("Enter Attacker's host: ")
+                attack_port = input("Enter Attacker's port:")
+                print("\nEnter the range of port you want to scan")
+                port_1 = int(input("Enter Starting Port: "))
+                port_2 = int(input("Enter Ending Port:"))
+            except ValueError:
+                print("Invalid input. Please enter numeric values.")
+            asyncio.run(phantomHydraAttackForNode(port_1, port_2, attack_host, attack_port))
         elif choice == '3':
             chrootBreakOutExploit()
 
