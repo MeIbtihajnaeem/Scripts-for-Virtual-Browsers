@@ -7,7 +7,7 @@ import asyncio
 OLD_NGINX_PATHS = []
 NEW_NGINX_PATHS = []
 
-class ProcessManager:
+class ProcessManagerForNginx:
     def __init__(self, port, nginx_backup_dir="/var/backups/nginx/"):
         self.port = port
         self.nginx_backup_dir = nginx_backup_dir
