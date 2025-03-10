@@ -1,5 +1,5 @@
 import asyncio
-
+import os
 class ProcessManagerNode:
     def __init__(self, process_name="node"):
         self.process_name = process_name
@@ -29,15 +29,22 @@ class ProcessManagerNode:
             return []
 
     async def kill_process(self):
-        """Kills the process using the obtained PIDs."""
+        """Kills the process using the obtained PIDs, but avoids killing the main process inside the container."""
         pids = await self.get_process_pids()
         if not pids:
             return
         
         try:
-            # Run kill command on all found PIDs
-            await asyncio.create_subprocess_exec("kill", "-9", *pids)
-            print(f"✅ Successfully killed process '{self.process_name}' with PIDs: {pids}")
+            main_pid = os.getpid()  # Get the main Python process ID
+            filtered_pids = [pid for pid in pids if str(pid) != str(main_pid)]
+
+            if not filtered_pids:
+                print("⚠️ No safe PIDs to kill (avoiding container exit).")
+                return
+
+            # Run kill command on filtered PIDs
+            await asyncio.create_subprocess_exec("kill", "-9", *filtered_pids)
+            print(f"✅ Successfully killed process '{self.process_name}' with PIDs: {filtered_pids}")
 
         except Exception as e:
             print(f"⚠️ Error killing process '{self.process_name}': {e}")
