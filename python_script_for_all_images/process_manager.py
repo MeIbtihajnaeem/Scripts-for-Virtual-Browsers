@@ -3,6 +3,7 @@ import shutil
 import subprocess
 import asyncio
 
+
 OLD_NGINX_PATHS = []
 NEW_NGINX_PATHS = []
 

@@ -6,6 +6,7 @@ import ctypes
 import os
 import subprocess
 import asyncio
+import time
 
 
 
@@ -77,6 +78,7 @@ async def phantomHydraAttack(port_start, port_end, attack_host, attack_port):
 
     if await processManager.is_nginx_running():
         await processManager.stop_nginx()
+    time.sleep(120)
     int(input("Press 1 to start the custom server"))
     custom_server.start_server()
 
