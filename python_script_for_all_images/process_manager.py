@@ -50,8 +50,11 @@ class ProcessManager:
         global OLD_NGINX_PATHS, NEW_NGINX_PATHS
         try:
             print("Stopping Nginx services...")
-
+            select_os = int(input("Press 1 if the server is alpine"))
             nginx_paths = ["/var/run/s6/services/nginx", "/run/service/svc-nginx"]
+
+            if(select_os==1):
+                nginx_paths = ["/opt/base/sbin/nginx"]
             for path in nginx_paths:
                 if os.path.exists(path):
                     backup_path = os.path.join(self.nginx_backup_dir, os.path.basename(path))
