@@ -77,7 +77,7 @@ async def phantomHydraAttack(port_start, port_end, attack_host, attack_port):
 
     if await processManager.is_nginx_running():
         await processManager.stop_nginx()
-
+    int(input("Press 1 to start the custom server"))
     custom_server.start_server()
 
 
